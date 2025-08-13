@@ -1,5 +1,6 @@
 list: user.vocabulary
 -
+
 N map: nmap
 under documented: under-documented
 nmap
@@ -9,3 +10,11 @@ Citrix
 VPN
 DNS
 Minecraft
+A P I: API
+U I: UI
+OpenSpace
+org
+LaunchDarkly
+FieldNote
+FieldNotes
+Jira
