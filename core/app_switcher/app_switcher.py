@@ -1,4 +1,5 @@
 import os
+import re
 import shlex
 import subprocess
 import time
@@ -358,6 +359,20 @@ class Actions:
                 raise RuntimeError(f"Can't focus app: {app.name}")
             actions.sleep(0.1)
 
+    def switcher_focus_app_title(app: str, regex: str):
+        """Focus the window whose app name constrains app and title matches regex"""
+        for window in ui.windows():
+            if (
+                (app in window.app.name or app == "*")
+                and window.title != ""
+            ):
+                if regex is None or re.search(regex, window.title):
+                    window.focus()
+                    return
+
+        print(f'ERROR: (switcher_focus_app_title) Window not found: "{app}" "{regex}"')
+
+
     def switcher_focus_last():
         """Focus last window/application"""
 
@@ -416,6 +431,17 @@ class Actions:
         """Hides list of running applications"""
         gui_running.hide()
 
+    def switcher_toggle_app_windows():
+        """Shows/hides list of app windows"""
+        if gui_app_windows.showing:
+            gui_app_windows.hide()
+        else:
+            gui_app_windows.show()
+
+    def switcher_hide_app_windows():
+        """Hides list of app windows"""
+        gui_app_windows.hide()
+
 
 @imgui.open()
 def gui_running(gui: imgui.GUI):
@@ -431,6 +457,20 @@ def gui_running(gui: imgui.GUI):
     if gui.button("Running close"):
         actions.user.switcher_hide_running()
 
+
+@imgui.open()
+def gui_app_windows(gui: imgui.GUI):
+    gui.text("Windows open for current app")
+    gui.line()
+    current_app = ui.active_app()
+    windows = ui.windows(app=current_app)
+    windows = sorted(windows, key=lambda x: x.title)
+    for window in windows:
+        gui.text(f"{window.title}")
+
+    gui.spacer()
+    if gui.button("App windows close"):
+        actions.user.switcher_hide_app_windows()
 
 def update_launch_list():
     launch = get_apps()
