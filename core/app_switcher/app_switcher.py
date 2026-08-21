@@ -372,7 +372,7 @@ class Actions:
                 (app in window.app.name or app == "*")
                 and window.title != ""
             ):
-                if regex is None or re.search(regex, window.title):
+                if regex is None or re.search(regex, window.title, re.IGNORECASE):
                     window.focus()
                     return
 
