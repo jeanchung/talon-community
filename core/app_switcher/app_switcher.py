@@ -14,7 +14,6 @@ from talon import Context, Module, actions, app, fs, imgui, ui
 # <spoken form>,<app name or .exe> - to add a spoken form override for the app, or
 # <app name or .exe> - to exclude the app from appearing in "running list" or "focus <app>"
 
-# TODO: Consider moving overrides to settings directory
 overrides_directory = os.path.dirname(os.path.realpath(__file__))
 override_file_name = f"app_name_overrides.{talon.app.platform}.csv"
 override_file_path = os.path.normcase(
@@ -110,7 +109,7 @@ if app.platform == "windows":
             if e.winerror & 0x80070000 == 0x80070000:
                 # It's a WinAPI error, so re-raise it, letting Python
                 # raise a specific exception such as FileNotFoundError.
-                raise ctypes.WinError(e.winerror & 0x0000FFFF)
+                raise ctypes.WinError(e.winerror & 0x0000FFFF) from e
             raise
         finally:
             if pidl:

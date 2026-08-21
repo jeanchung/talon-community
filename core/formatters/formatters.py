@@ -1,9 +1,10 @@
 import logging
 import re
 from abc import ABC, abstractmethod
-from typing import Callable, Optional, Union
+from collections.abc import Callable
+from typing import Optional, Union
 
-from talon import Context, Module, actions, app, registry
+from talon import Module, actions, app
 from talon.grammar import Phrase
 
 
@@ -83,7 +84,7 @@ class CodeFormatter(Formatter):
             if word.isnumeric():
                 first = True
             # Word is symbol
-            elif not word.isalpha():
+            elif not word.isalnum():
                 groups.append(delimiter.join(group))
                 word = word.strip()
                 if word != ".":
@@ -105,9 +106,29 @@ class CodeFormatter(Formatter):
 
 
 class TitleFormatter(Formatter):
-    _words_to_keep_lowercase = (
-        "a an and as at but by en for if in nor of on or per the to v via vs".split()
-    )
+    _words_to_keep_lowercase = [
+        "a",
+        "an",
+        "and",
+        "as",
+        "at",
+        "but",
+        "by",
+        "en",
+        "for",
+        "if",
+        "in",
+        "nor",
+        "of",
+        "on",
+        "or",
+        "per",
+        "the",
+        "to",
+        "v",
+        "via",
+        "vs",
+    ]
 
     def format(self, text: str) -> str:
         words = [x for x in re.split(r"(\s+)", text) if x]
